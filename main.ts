@@ -11,10 +11,15 @@ Deno.serve({port}, (req: Request) => {
 		const file = Deno.openSync("./" + path, {read: true});
 		const readableStream = file.readable;
 
+		const contentType = getContentType(path);
+		const headers = {
+			"Content-Type": contentType,
+		};
+
 		if (!pathToIndex) logRequest(req.method, new URL(req.url).pathname, 200);
 		else logRequest(req.method, new URL(req.url).pathname, 200, path);
 
-		return new Response(readableStream);
+		return new Response(readableStream, {headers});
 	} catch {
 		try {
 			const file = Deno.openSync("./" + path + ".html", {read: true});
@@ -38,3 +43,28 @@ Deno.serve({port}, (req: Request) => {
 });
 
 const logRequest = (method: string, url: string, status: number, redirect?: string) => console.log(`${(" " + method).substring(-1, 4)} ${status} ${url}${redirect ? ` -> ${redirect}` : ""}`);
+
+const getContentType = (path: string): string => {
+	const extension = path.split(".").pop();
+	switch (extension) {
+		case "html":
+			return "text/html";
+		case "css":
+			return "text/css";
+		case "js":
+			return "text/javascript";
+		case "json":
+			return "application/json";
+		case "png":
+			return "image/png";
+		case "jpg":
+		case "jpeg":
+			return "image/jpeg";
+		case "gif":
+			return "image/gif";
+		case "svg":
+			return "image/svg+xml";
+		default:
+			return "text/plain";
+	}
+};

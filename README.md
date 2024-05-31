@@ -7,6 +7,11 @@ Implements some functionalities, Netlify has.
 - [ ] Custom redirects (`_redirects` file)
 - [ ] Custom headers (`_headers` file)
 
+## Use directly from GitHub
+```
+deno run -A https://github.com/DNAScanner/Netlify-Like-Server/raw/main/main.ts
+```
+
 ## PowerShell Implementation (Microsoft.PowerShell_profile.ps1)
 ```powershell
 function serve {

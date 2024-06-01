@@ -13,7 +13,7 @@ Deno.serve({port}, (req: Request) => {
 
 		const contentType = getContentType(path);
 		const headers = {
-			"Content-Type": contentType,
+			"Content-Type": contentType + "; charset=utf-8",
 		};
 
 		if (!pathToIndex) logRequest(req.method, new URL(req.url).pathname, 200);
@@ -25,9 +25,13 @@ Deno.serve({port}, (req: Request) => {
 			const file = Deno.openSync("./" + path + ".html", {read: true});
 			const readableStream = file.readable;
 
+			const headers = {
+				"Content-Type": "text/html; charset=utf-8",
+			};
+
 			logRequest(req.method, new URL(req.url).pathname, 200, path + ".html");
 
-			return new Response(readableStream);
+			return new Response(readableStream, {headers});
 		} catch {
 			if (!pathToIndex) logRequest(req.method, new URL(req.url).pathname, 404);
 			else logRequest(req.method, new URL(req.url).pathname, 404, path);
